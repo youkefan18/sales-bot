@@ -14,6 +14,10 @@ from sales_bot.langchain_model.api2d_model import Api2dLLM
 
 @dataclass
 class QAGenerator():
+    """
+        Generate QA pairs based on domain industry of sales man and few shots.
+        For good example shots in electronic device sales, refer to [sales skills](https://zhuanlan.zhihu.com/p/357487465)
+    """
     _prompt: BasePromptTemplate = ChatPromptTemplate.from_messages(
         [SystemMessagePromptTemplate.from_template(
             """You are a {role}. \n

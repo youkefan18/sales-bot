@@ -8,7 +8,7 @@ readme = "README.md"
 packages = [{include = "sales_bot"}]
 
 [tool.poetry.dependencies]
-python = "3.9"
+python = ">=3.9, <=3.12"
 langchain = "^0.0.325"
 pydantic-settings = "^2.0.3"
 
@@ -100,3 +100,8 @@ use_parentheses = true
 [tool.black]
 line_length = 88
 include = '\.pyi?$'
+
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
+priority = "primary"
