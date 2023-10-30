@@ -12,7 +12,6 @@ from typing import (
 )
 
 import requests
-
 from langchain.callbacks.manager import CallbackManagerForLLMRun
 from langchain.llms.base import LLM
 from langchain.pydantic_v1 import Field, root_validator
@@ -159,7 +158,7 @@ if __name__ == "__main__":
     import os
 
     import dotenv
-    env_file = f'{os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}/starlette_{os.getenv("ENVIRONMENT", "dev")}.env'
+    env_file = f'{os.getenv("ENVIRONMENT", "dev")}.env'
     dotenv.load_dotenv(dotenv_path=f'{env_file}')
 
     from langchain.chains import LLMChain
