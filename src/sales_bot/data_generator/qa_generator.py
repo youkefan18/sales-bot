@@ -14,14 +14,14 @@ from langchain_model import Api2dLLM
 
 def promptFactory() -> BasePromptTemplate:
     return PromptTemplate.from_template(
-        """You are a {role}. \n
-        Now you are training freshman in sales in your domain industry and please provide
-        {num_qa} sales talk Q&A examples. \n
-        The Q&A examples are about a scenario where {scenario}. \n
-        Please format question and answer examples as below format: \n
-        Sequence Number, number only.
-        [Customer Question]
-        [Sales Answer]
+        """你是一个 {role}. \n
+        你在训练你所在的行业领域内的销售新人，请提供
+        {num_qa} 个销售话术 Q&A 的例子. \n
+        该Q&A例子的对话场景为{scenario}. \n
+        请以如下格式提供例子: \n
+        序号, 仅数字.
+        [客户问题]
+        [销售回答]
         """
     )
 
@@ -45,14 +45,21 @@ class QAGenerator():
     def prompt(self) -> BasePromptTemplate:
         return self._prompt
 
+    def initQA(self, output: str):
+        from langchain.chains import LLMChain
+        role = "在电器行业的资深销售人员"
+        scenarios = ["客户与销售在讨价还价", 
+                     "客户在询问电器产品细节",
+                     "客户在粗鲁地向销售抱怨"
+                     ]
+        qa = QAGenerator()
+        num_qa = 10
+        chain = LLMChain(llm=qa.model, prompt=qa.prompt)
+        result = [chain.run(role=role, num_qa=num_qa, scenario=s) for s in scenarios]
+        with open(output, 'w', encoding='utf-8-sig') as f:
+            f.writelines(result)
+
 
 if __name__ == "__main__":
-    from langchain.chains import LLMChain
     qa = QAGenerator()
-    chain = LLMChain(llm=qa.model, prompt=qa.prompt)
-    text = chain.run(
-        role="Senior sales person selling electronic devices",
-        num_qa=2,
-        scenario="customers are bargaining with sales man"
-    )
-    print(text)
+    qa.initQA("resources/electronic_devices_sales_qa.txt")

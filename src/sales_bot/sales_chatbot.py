@@ -1,23 +1,26 @@
-import gradio as gr
 import random
 import time
-
 from typing import List
 
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
+import gradio as gr
+from embedding import ChineseEmbedding
 from langchain.chains import RetrievalQA
-from langchain.chat_models import ChatOpenAI
+from langchain.vectorstores import FAISS
+from langchain_model import Api2dLLM
 
 
-def initialize_sales_bot(vector_store_dir: str="real_estates_sale"):
-    db = FAISS.load_local(vector_store_dir, OpenAIEmbeddings())
-    llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
+def initialize_sales_bot(vector_store_dir: str="electronic_devices_sales_qa"):
+    db = FAISS.load_local(vector_store_dir, ChineseEmbedding().embeddings)
+    llm = Api2dLLM(temperature=0)
     
     global SALES_BOT    
-    SALES_BOT = RetrievalQA.from_chain_type(llm,
-                                           retriever=db.as_retriever(search_type="similarity_score_threshold",
-                                                                     search_kwargs={"score_threshold": 0.8}))
+    SALES_BOT = RetrievalQA.from_chain_type(
+        llm,
+        retriever=db.as_retriever(
+            search_type="similarity_score_threshold",
+            search_kwargs={"score_threshold": 0.8}
+        )
+    )
     # 返回向量数据库的检索结果
     SALES_BOT.return_source_documents = True
 
@@ -44,7 +47,7 @@ def sales_chat(message, history):
 def launch_gradio():
     demo = gr.ChatInterface(
         fn=sales_chat,
-        title="房产销售",
+        title="电器销售",
         # retry_btn=None,
         # undo_btn=None,
         chatbot=gr.Chatbot(height=600),
@@ -53,7 +56,7 @@ def launch_gradio():
     demo.launch(share=True, server_name="0.0.0.0")
 
 if __name__ == "__main__":
-    # 初始化房产销售机器人
+    # 初始化电器销售机器人
     initialize_sales_bot()
     # 启动 Gradio 服务
     launch_gradio()
