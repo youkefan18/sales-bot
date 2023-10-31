@@ -25,13 +25,11 @@ class VectorDb(ABC):
 
     def __init__(self, dbfile: str = "resources/electronic_devices_sales_qa.txt", transformer: TextSplitter = defaultDocTransformer(),rebuild: bool = False):
         self._transformer = transformer
-        if not os.path.exists(dbfile.replace(".txt", ".db")) or rebuild:
-            self._db = self._initDb(dbfile)
+        self._db = self._initDb(dbfile, rebuild)
 
     @abstractmethod
-    def _initDb(self, dbfile: str) -> VectorStore:
+    def _initDb(self, dbfile: str, rebuild: bool) -> VectorStore:
         pass
-        
 
     @property
     def db(self):

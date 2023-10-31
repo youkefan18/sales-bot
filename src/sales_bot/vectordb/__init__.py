@@ -1,2 +1,2 @@
-from .faiss import FaissDb
+from .faissdb import FaissDb
 from .vectordb import VectorDb
