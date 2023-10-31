@@ -11,7 +11,7 @@
 
 * [TODO] Database query function to retrieve product spec or pricing.
 
-* [TODO] Fewshot on sales talk techniques on bargaining with customer.
+* [TODO] Fewshot on sales talk techniques on bargaining with customer. See [blog](https://zhuanlan.zhihu.com/p/357487465) about sales logic.
   
 * [TODO] Multi modal Q&A accepting apartment structure images and 
   return mocked decoration effect images.
