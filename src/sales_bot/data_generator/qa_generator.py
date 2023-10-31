@@ -48,10 +48,11 @@ class QAGenerator():
     def initQA(self, output: str):
         from langchain.chains import LLMChain
         role = "在电器行业的资深销售人员"
-        scenarios = ["客户与销售在讨价还价", 
-                     "客户在询问电器产品细节",
-                     "客户在粗鲁地向销售抱怨"
-                     ]
+        scenarios = [
+            "客户与销售在讨价还价", 
+            "客户在询问电器产品细节",
+            "客户在粗鲁地向销售抱怨"
+        ]
         qa = QAGenerator()
         num_qa = 10
         chain = LLMChain(llm=qa.model, prompt=qa.prompt)

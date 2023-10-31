@@ -16,6 +16,7 @@ from langchain.callbacks.manager import CallbackManagerForLLMRun
 from langchain.llms.base import LLM
 from langchain.pydantic_v1 import Field, root_validator
 from langchain.utils import get_from_dict_or_env
+from utils import LOG
 
 
 class Api2dLLM(LLM):
@@ -144,7 +145,7 @@ class Api2dLLM(LLM):
                 f"Api2d call failed with status code {response.status_code}."
                 f" Details: {optional_detail}"
             )
-
+        
         #return response.json()["completions"][0]["data"]["text"]
         return response.json()["choices"][0]["message"]["content"].strip() if is_gpt3_5 \
             else response.json()["choices"][0]["text"].strip()

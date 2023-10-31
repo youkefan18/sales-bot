@@ -1,28 +1,25 @@
-import random
-import time
-from typing import List
 
 import gradio as gr
-from embedding import ChineseEmbedding
 from langchain.chains import RetrievalQA
-from langchain.vectorstores import FAISS
 from langchain_model import Api2dLLM
+from vectordbs import FaissDb
 
 
 def initialize_sales_bot(vector_store_dir: str="electronic_devices_sales_qa"):
-    db = FAISS.load_local(vector_store_dir, ChineseEmbedding().embeddings)
     llm = Api2dLLM(temperature=0)
     
-    global SALES_BOT    
+    global SALES_BOT
+    FaissDb().db.similarity_search_with_relevance_scores
     SALES_BOT = RetrievalQA.from_chain_type(
         llm,
-        retriever=db.as_retriever(
+        retriever=FaissDb().db.as_retriever(
             search_type="similarity_score_threshold",
             search_kwargs={"score_threshold": 0.8}
         )
     )
     # 返回向量数据库的检索结果
     SALES_BOT.return_source_documents = True
+    SALES_BOT.combine_documents_chain.verbose = True
 
     return SALES_BOT
 
@@ -53,7 +50,7 @@ def launch_gradio():
         chatbot=gr.Chatbot(height=600),
     )
 
-    demo.launch(share=True, server_name="0.0.0.0")
+    demo.launch(share=True, server_name="localhost")
 
 if __name__ == "__main__":
     # 初始化电器销售机器人
