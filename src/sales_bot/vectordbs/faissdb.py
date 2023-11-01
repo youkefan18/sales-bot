@@ -2,7 +2,11 @@ import os
 import sys
 from abc import ABC, abstractmethod
 
+import faiss
 import numpy as np
+from langchain.docstore import InMemoryDocstore
+from langchain.memory import VectorStoreRetrieverMemory
+from langchain.schema.embeddings import Embeddings
 from langchain.schema.vectorstore import VectorStore
 from langchain.text_splitter import CharacterTextSplitter, TextSplitter
 from langchain.vectorstores import FAISS
@@ -37,15 +41,16 @@ class FaissDb(VectorDb):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
-    def _initDb(self, dbfile: str, rebuild: bool) -> VectorStore:
+    
+    #override
+    def _initDb(self, dbfile: str, embedding: Embeddings, rebuild: bool) -> VectorStore:
         _db: FAISS = None
         if not os.path.exists(dbfile.replace(".txt", ".db")) or rebuild:
             try:
                 with open(dbfile, 'r', encoding='utf-8-sig') as f:
                     docs = f.read()
                 docs = self._transformer.create_documents([docs])
-                _db = FAISS.from_documents(docs, ChineseEmbedding().embeddings, relevance_score_fn=score_normalizer)
+                _db = FAISS.from_documents(docs, embedding, relevance_score_fn=score_normalizer)
                 _db.save_local(dbfile.replace(".txt", ".db"))
                 return _db
             except FileNotFoundError as e:
@@ -53,9 +58,19 @@ class FaissDb(VectorDb):
             except Exception as e:
                 print(e)
         else:
-            _db = FAISS.load_local(dbfile.replace(".txt", ".db"), ChineseEmbedding().embeddings,  relevance_score_fn=score_normalizer)
+            _db = FAISS.load_local(dbfile.replace(".txt", ".db"), embedding,  relevance_score_fn=score_normalizer)
         return _db
     
+    #override
+    def createMemory(self) -> VectorStoreRetrieverMemory:
+        embedding_size = 1536 # Dimensions of the OpenAIEmbeddings
+        index = faiss.IndexFlatL2(embedding_size)
+        embedding_fn = self._embedding
+        vectorstore = FAISS(embedding_fn, index, InMemoryDocstore({}), {})
+        retriever = vectorstore.as_retriever(search_kwargs=dict(k=1))
+        memory = VectorStoreRetrieverMemory(retriever=retriever)
+        return memory
+
 if __name__ == "__main__":
     v = FaissDb()
     retriever = v.db.as_retriever(

@@ -6,7 +6,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
+            "name": "internalConsole",
             "type": "python",
             "request": "launch",
             "program": "${file}",
@@ -15,7 +15,7 @@
             "justMyCode": false
         },
         {
-            "name": "Python: Current File",
+            "name": "integratedTerminal",
             "type": "python",
             "request": "launch",
             "program": "${file}",
@@ -24,7 +24,7 @@
             "justMyCode": false
         },
         {
-            "name": "Python: Current File",
+            "name": "externalTerminal",
             "type": "python",
             "request": "launch",
             "program": "${file}",

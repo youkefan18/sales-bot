@@ -2,6 +2,8 @@ import os
 import sys
 from abc import ABC, abstractmethod
 
+from langchain.memory import VectorStoreRetrieverMemory
+from langchain.schema.embeddings import Embeddings
 from langchain.schema.vectorstore import VectorStore
 from langchain.text_splitter import CharacterTextSplitter, TextSplitter
 from langchain.vectorstores import FAISS
@@ -22,13 +24,19 @@ def defaultDocTransformer():
 class VectorDb(ABC):
     _db: VectorStore
     _transformer: TextSplitter
+    _embedding: Embeddings
 
-    def __init__(self, dbfile: str = "resources/electronic_devices_sales_qa.txt", transformer: TextSplitter = defaultDocTransformer(),rebuild: bool = False):
+    def __init__(self, dbfile: str = "resources/electronic_devices_sales_qa.txt", embedding: Embeddings =  ChineseEmbedding().embeddings,transformer: TextSplitter = defaultDocTransformer(),rebuild: bool = False):
         self._transformer = transformer
-        self._db = self._initDb(dbfile, rebuild)
+        self._embedding = embedding
+        self._db = self._initDb(dbfile, embedding, rebuild)
 
     @abstractmethod
-    def _initDb(self, dbfile: str, rebuild: bool) -> VectorStore:
+    def _initDb(self, dbfile: str, embedding: Embeddings ,rebuild: bool) -> VectorStore:
+        pass
+    
+    @abstractmethod
+    def createMemory(self) -> VectorStoreRetrieverMemory:
         pass
 
     @property

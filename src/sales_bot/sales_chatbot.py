@@ -9,7 +9,7 @@ def initialize_sales_bot(vector_store_dir: str="electronic_devices_sales_qa"):
     llm = Api2dLLM(temperature=0)
     
     global SALES_BOT
-    FaissDb().db.similarity_search_with_relevance_scores
+    
     SALES_BOT = RetrievalQA.from_chain_type(
         llm,
         retriever=FaissDb().db.as_retriever(
