@@ -1,25 +1,14 @@
 
 import gradio as gr
-from langchain.chains import RetrievalQA
-from langchain_model import Api2dLLM
-from vectordbs import FaissDb
+from chains import SalesChain
+from langchain.memory import ConversationBufferMemory
 
 
 def initialize_sales_bot(vector_store_dir: str="electronic_devices_sales_qa"):
-    llm = Api2dLLM(temperature=0)
     
     global SALES_BOT
     
-    SALES_BOT = RetrievalQA.from_chain_type(
-        llm,
-        retriever=FaissDb().db.as_retriever(
-            search_type="similarity_score_threshold",
-            search_kwargs={"score_threshold": 0.8}
-        )
-    )
-    # 返回向量数据库的检索结果
-    SALES_BOT.return_source_documents = True
-    SALES_BOT.combine_documents_chain.verbose = True
+    SALES_BOT = SalesChain(memory=ConversationBufferMemory(memory_key="chat_history"))
 
     return SALES_BOT
 
@@ -29,16 +18,17 @@ def sales_chat(message, history):
     # TODO: 从命令行参数中获取
     enable_chat = True
 
-    ans = SALES_BOT({"query": message})
+    ans = SALES_BOT.agent.run({"input": message})
     # 如果检索出结果，或者开了大模型聊天模式
     # 返回 RetrievalQA combine_documents_chain 整合的结果
-    if ans["source_documents"] or enable_chat:
-        print(f"[result]{ans['result']}")
-        print(f"[source_documents]{ans['source_documents']}")
-        return ans["result"]
-    # 否则输出套路话术
-    else:
-        return "这个问题我要问问领导"
+    # if ans["source_documents"] or enable_chat:
+    #     print(f"[result]{ans['result']}")
+    #     print(f"[source_documents]{ans['source_documents']}")
+    #     return ans["result"]
+    # # 否则输出套路话术
+    # else:
+    #     return "这个问题我要问问领导"
+    return ans
     
 
 def launch_gradio():

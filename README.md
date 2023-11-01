@@ -7,7 +7,7 @@
 
 * Changed embedding to local model cached from huggingface for better network and Chinese embedding support.
 
-* [TODO] Add router chain for online search for possible answer if not found in QA
+* Customized sales ZeroShotAgent to search vectordb firs, then web, finally llm for the answer.
 
 * [TODO] Database query function to retrieve product spec or pricing.
 
@@ -15,3 +15,5 @@
   
 * [TODO] Multi modal Q&A accepting apartment structure images and 
   return mocked decoration effect images.
+
+![Alt text](resources/image.png)

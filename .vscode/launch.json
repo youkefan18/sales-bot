@@ -6,30 +6,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "internalConsole",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "purpose":["debug-test"],
-            "console": "internalConsole",
-            "justMyCode": false
-        },
-        {
             "name": "integratedTerminal",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "purpose":["debug-test"],
             "console": "integratedTerminal",
-            "justMyCode": false
-        },
-        {
-            "name": "externalTerminal",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "purpose":["debug-test"],
-            "console": "externalTerminal",
             "justMyCode": false
         }
     ]
